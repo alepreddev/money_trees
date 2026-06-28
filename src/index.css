@@ -1,0 +1,217 @@
+/* ============================================
+   Money Trees — CSS Base (Esqueleto Funcional)
+   ============================================
+   Solo layout y estructura mínima.
+   Los estilos visuales se añadirán según tus especificaciones.
+*/
+
+/* --- Reset mínimo --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+
+/* --- Loading screen --- */
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* --- Auth pages (Login / Register) --- */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.auth-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.auth-form__input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+}
+
+.auth-form__input:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 1px;
+}
+
+.auth-form__submit {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.auth-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-form__error {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* --- App Layout --- */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  gap: 1rem;
+}
+
+.app-nav {
+  display: none;
+  gap: 0.5rem;
+}
+
+.app-header__user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-header__signout {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 0.875rem;
+}
+
+.app-main {
+  flex: 1;
+  padding: 1.5rem;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* --- Bottom Nav (Mobile) --- */
+.app-bottom-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.app-bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-decoration: none;
+  font-size: 0.75rem;
+}
+
+.app-bottom-nav__item--primary {
+  font-size: 1.5rem;
+}
+
+/* --- Dashboard --- */
+.dashboard-metrics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* --- Responsive: Tablet (768px+) --- */
+@media (min-width: 768px) {
+  .dashboard-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .app-bottom-nav {
+    display: none;
+  }
+
+  .app-nav {
+    display: flex;
+  }
+
+  .app-main {
+    padding-bottom: 1.5rem;
+  }
+}
+
+/* --- Responsive: Desktop (1024px+) --- */
+@media (min-width: 1024px) {
+  .dashboard-metrics {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

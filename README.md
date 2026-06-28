@@ -1,1 +1,0 @@
-Aplicacion para el manejo de las finanzas y los gastos mensuales
