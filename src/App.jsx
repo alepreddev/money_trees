@@ -6,19 +6,21 @@ import AppLayout from '@/layouts/AppLayout';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import DashboardPage from '@/pages/DashboardPage';
+import AccountsPage from '@/pages/AccountsPage';
+import CategoriesPage from '@/pages/CategoriesPage';
 
 /**
  * App — Componente raíz.
  * 
  * Árbol de rutas:
- *   /login       → Solo usuarios NO autenticados
- *   /register    → Solo usuarios NO autenticados
- *   /dashboard   → Solo usuarios autenticados (dentro de AppLayout)
- *   /accounts    → (Fase 3)
- *   /categories  → (Fase 3)
+ *   /login        → Solo usuarios NO autenticados
+ *   /register     → Solo usuarios NO autenticados
+ *   /dashboard    → Solo usuarios autenticados (dentro de AppLayout)
+ *   /accounts     → Gestión de cuentas (Fase 3)
+ *   /categories   → Gestión de categorías (Fase 3)
  *   /transactions → (Fase 4)
- *   /budgets     → (Fase 5)
- *   /            → Redirige a /dashboard
+ *   /budgets      → (Fase 5)
+ *   /             → Redirige a /dashboard
  */
 export default function App() {
   return (
@@ -35,9 +37,9 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
-              {/* Fases futuras:
               <Route path="/accounts" element={<AccountsPage />} />
               <Route path="/categories" element={<CategoriesPage />} />
+              {/* Fases futuras:
               <Route path="/transactions" element={<TransactionsPage />} />
               <Route path="/transactions/new" element={<NewTransactionPage />} />
               <Route path="/budgets" element={<BudgetsPage />} />
