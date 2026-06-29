@@ -8,6 +8,8 @@ import RegisterPage from '@/pages/RegisterPage';
 import DashboardPage from '@/pages/DashboardPage';
 import AccountsPage from '@/pages/AccountsPage';
 import CategoriesPage from '@/pages/CategoriesPage';
+import TransactionsPage from '@/pages/TransactionsPage';
+import NewTransactionPage from '@/pages/NewTransactionPage';
 
 /**
  * App — Componente raíz.
@@ -18,7 +20,8 @@ import CategoriesPage from '@/pages/CategoriesPage';
  *   /dashboard    → Solo usuarios autenticados (dentro de AppLayout)
  *   /accounts     → Gestión de cuentas (Fase 3)
  *   /categories   → Gestión de categorías (Fase 3)
- *   /transactions → (Fase 4)
+ *   /transactions → Motor de transacciones (Fase 4)
+ *   /transactions/new → Registro rápido (Fase 4)
  *   /budgets      → (Fase 5)
  *   /             → Redirige a /dashboard
  */
@@ -39,9 +42,9 @@ export default function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/accounts" element={<AccountsPage />} />
               <Route path="/categories" element={<CategoriesPage />} />
-              {/* Fases futuras:
               <Route path="/transactions" element={<TransactionsPage />} />
               <Route path="/transactions/new" element={<NewTransactionPage />} />
+              {/* Fases futuras:
               <Route path="/budgets" element={<BudgetsPage />} />
               */}
             </Route>
