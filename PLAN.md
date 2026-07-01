@@ -68,9 +68,9 @@ Este documento es la hoja de ruta interactiva para el desarrollo de la aplicaci�
 ---
 
 ## 📊 Fase 6: Dashboard, Analíticas y Cierre
-- [ ] **6.1 Métricas Clave del Dashboard Principal**
+- [x] **6.1 Métricas Clave del Dashboard Principal**
   - Implementar lógica para consolidar de un vistazo: Balance Neto Total (Suma de activos menos deudas), Ingresos del Mes, Gastos del Mes y Flujo de Caja Neto.
-- [ ] **6.2 Reportes Gráficos**
+- [x] **6.2 Reportes Gráficos**
   - Preparar los arreglos de datos estructurados para alimentar gráficos (ej. Distribución porcentual de gastos por categoría y evolución temporal de ingresos vs gastos).
-- [ ] **6.3 Pruebas de Consistencia de Datos**
+- [x] **6.3 Pruebas de Consistencia de Datos**
   - Realizar auditorías de transacciones: verificar que al borrar un gasto el saldo de la cuenta regrese a la normalidad y que las transferencias no alteren el patrimonio global.
