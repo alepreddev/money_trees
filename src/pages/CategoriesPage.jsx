@@ -3,6 +3,7 @@ import { useCategories } from '@/hooks/useCategories';
 import CategoryCard from '@/components/CategoryCard';
 import CategoryForm from '@/components/CategoryForm';
 import Modal from '@/components/Modal';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * CategoriesPage — Página de gestión de categorías.
@@ -59,12 +60,14 @@ export default function CategoriesPage() {
 
     if (createError) {
       setFormError(createError.message);
+      Toast.show(createError.message, { type: 'ios', status: 'error' });
       setFormLoading(false);
       return;
     }
 
     setFormLoading(false);
     setShowCreateModal(false);
+    Toast.show('Categoría creada exitosamente', { type: 'ios', status: 'success' });
   }
 
   async function handleUpdate(data) {
@@ -77,12 +80,14 @@ export default function CategoriesPage() {
 
     if (updateError) {
       setFormError(updateError.message);
+      Toast.show(updateError.message, { type: 'ios', status: 'error' });
       setFormLoading(false);
       return;
     }
 
     setFormLoading(false);
     setEditingCategory(null);
+    Toast.show('Categoría actualizada', { type: 'ios', status: 'success' });
   }
 
   async function handleDelete(id) {
@@ -206,6 +211,7 @@ export default function CategoriesPage() {
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         title="Nueva Categoría"
+        animation="top"
       >
         {formError && (
           <div className="page-error" role="alert">{formError}</div>
@@ -222,6 +228,7 @@ export default function CategoriesPage() {
         isOpen={!!editingCategory}
         onClose={() => setEditingCategory(null)}
         title="Editar Categoría"
+        animation="left"
       >
         {formError && (
           <div className="page-error" role="alert">{formError}</div>

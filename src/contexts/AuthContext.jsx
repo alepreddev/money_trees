@@ -80,7 +80,7 @@ export function AuthProvider({ children }) {
       email,
       password,
       options: {
-        data: metadata, // { full_name, preferred_currency, etc. }
+        data: metadata,
       },
     });
     return { data, error };

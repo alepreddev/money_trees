@@ -1,0 +1,79 @@
+:root {
+    /* Colores base */
+    --toast-success: #24d72a;
+    --toast-error: #f44336;
+    --toast-info: #2196f3;
+    --toast-warning: #ffb444;
+    
+    /* Estética */
+    --ios-bg: rgba(255, 255, 255, 0.8);
+    --android-bg: #323232;
+}
+
+.toast-container {
+    position: fixed;
+    top: 20px; /* Siempre arriba */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 90%;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.toast {
+    padding: 10px 22px;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    pointer-events: auto;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    border-left: 5px solid transparent; /* Indicador de color */
+}
+
+/* --- Variantes de Color --- */
+.toast.default { background-color: var(--ios-bg); color: #000000;}
+.toast.success { background-color: var(--toast-success); color: #ffffff;}
+.toast.error   { background-color: var(--toast-error); color: #ffffff; }
+.toast.info    { background-color: var(--toast-info); color: #ffffff; }
+.toast.warning { background-color: var(--toast-warning); color: #000000; }
+
+/* --- Estilo iOS --- */
+.toast-ios {
+    background: var(--ios-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 20px;
+    animation: ios-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* --- Estilo Android --- */
+.toast-android {
+    background: var(--android-bg);
+    border-radius: 20px; /* Android suele ser más cuadrado o levemente redondeado */
+    animation: android-in 0.4s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+/* Animaciones (Entrada Superior) */
+@keyframes ios-in {
+    0% { opacity: 0; transform: translateY(-30px) scale(0.8); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes android-in {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.toast.hide {
+    opacity: 0;
+    transform: scale(0.9);
+    margin-top: -50px; /* Efecto de colapso al desaparecer */
+}

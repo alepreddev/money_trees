@@ -544,82 +544,10 @@ body {
 }
 
 /* ============================================
-   MODAL
+   MODAL — Potenciado por dinamic-windows (Jose Arocha)
+   Los estilos base están en src/lib/dinamic-windows/style.css
    ============================================ */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: rgba(26, 26, 46, 0.45);
-  backdrop-filter: blur(4px);
-  z-index: 100;
-  animation: fadeIn 200ms ease;
-}
 
-.modal-content {
-  width: 100%;
-  max-width: 520px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: var(--radius-xl);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--color-border-light);
-  animation: slideUp 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--color-border-light);
-}
-
-.modal-title {
-  font-size: 1.0625rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.modal-close {
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border-light);
-  cursor: pointer;
-  font-size: 0.875rem;
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  color: var(--color-text-secondary);
-  transition: var(--transition-fast);
-  line-height: 1;
-}
-
-.modal-close:hover {
-  background: var(--color-expense-bg);
-  border-color: var(--color-expense);
-  color: var(--color-expense);
-}
-
-.modal-body {
-  padding: 1.5rem;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
 
 /* ============================================
    ENTITY FORM (shared: accounts + categories)

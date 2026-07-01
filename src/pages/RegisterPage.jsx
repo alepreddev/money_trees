@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * RegisterPage — Página de registro de nuevo usuario.
@@ -26,12 +27,14 @@ export default function RegisterPage() {
     // Validación: contraseñas coinciden
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden.');
+      Toast.show('Las contraseñas no coinciden', { type: 'ios', status: 'warning' });
       return;
     }
 
     // Validación: longitud mínima
     if (password.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres.');
+      Toast.show('Mínimo 6 caracteres en la contraseña', { type: 'ios', status: 'warning' });
       return;
     }
 
@@ -43,11 +46,13 @@ export default function RegisterPage() {
 
     if (authError) {
       setError(authError.message);
+      Toast.show(authError.message, { type: 'ios', status: 'error' });
       setLoading(false);
       return;
     }
 
     setSuccess(true);
+    Toast.show('¡Cuenta creada exitosamente!', { type: 'ios', status: 'success' });
     setLoading(false);
   }
 

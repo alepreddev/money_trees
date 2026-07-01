@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * LoginPage — Página de inicio de sesión.
@@ -23,7 +24,10 @@ export default function LoginPage() {
 
     if (authError) {
       setError(authError.message);
+      Toast.show(authError.message, { type: 'ios', status: 'error' });
       setLoading(false);
+    } else {
+      Toast.show('¡Bienvenido de vuelta!', { type: 'ios', status: 'success' });
     }
     // Si fue exitoso, AuthContext detecta la sesión y redirige automáticamente
   }

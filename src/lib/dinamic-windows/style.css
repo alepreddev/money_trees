@@ -1,0 +1,116 @@
+/* --- Estilos Base del Sistema de Ventanas (dinamic-windows por Jose Arocha) --- */
+/* --- Mejoras v2: bordes suaves, sombra mejorada, overflow oculto durante animación --- */
+:root {
+    --win-speed: 450ms;
+    --win-ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* El fondo oscuro (Backdrop) */
+.win-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    z-index: 1000;
+
+    /* Estado inicial: Oculto */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition: opacity var(--win-speed) ease, visibility var(--win-speed);
+}
+
+/* Estado Activo del Overlay */
+.win-overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* La tarjeta (Ventana) */
+.win-card {
+    background: var(--color-surface, #ffffff);
+    color: var(--color-text, #111111);
+    padding: 1.5rem;
+    border-radius: 20px;
+    box-shadow: 
+        0 0 0 1px rgba(0, 0, 0, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.12),
+        0 24px 48px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow: hidden;           /* Oculta contenido que sobresale durante scale */
+    position: relative;
+    will-change: transform, opacity, border-radius;
+    opacity: 0;
+    /* Empieza invisible hasta que JS lo anime */
+}
+
+/* Scroll solo en el body, no en la card entera — evita artefactos de scroll durante animación */
+.win-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: calc(85vh - 5rem); /* Descuenta header */
+    overflow-y: auto;
+}
+
+.wc-p-0 { padding: 0; }
+.wc-p-2 { padding: 8px; }
+.wc-p-4 { padding: 16px; }
+.wc-p-6 { padding: 24px; }
+
+/* Tamaños de las ventanas */
+.w-sm { max-width: 360px; }
+.w-lg { max-width: 800px; }
+.w-xl { max-width: 1140px; }
+
+.win-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    flex-shrink: 0;
+}
+
+.win-header h1, .win-header h2, .win-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.win-close-btn {
+    background: var(--color-surface-raised, #f5f6fa);
+    border: 1px solid var(--color-border-light, rgba(0,0,0,0.06));
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--color-text-secondary, #666);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.win-close-btn:hover {
+    background-color: var(--color-danger-bg, #ffeaea);
+    border-color: var(--color-danger, #e74c3c);
+    color: var(--color-danger, #e74c3c);
+    transform: rotate(90deg);
+}

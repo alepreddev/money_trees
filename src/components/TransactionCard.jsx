@@ -1,22 +1,19 @@
+import { useState } from 'react';
+import ConfirmModal from '@/components/ConfirmModal';
+import { Toast } from '@/lib/alerts/alerts';
+
 /**
  * TransactionCard — Tarjeta visual para un movimiento del flujo de caja.
- *
- * Muestra:
- * - Icono y nombre de la categoría (o indicador de transferencia)
- * - Cuenta origen (y cuenta destino si es transferencia)
- * - Monto formateado y coloreado (verde ingreso, rojo gasto, azul transferencia)
- * - Fecha formateada
- * - Botón para eliminar (reverting balance via DB trigger)
+ * Potenciada con alertas y ventanas dinámicas de Jose Arocha.
  */
-
 export default function TransactionCard({ transaction, onDelete }) {
+  const [showConfirm, setShowConfirm] = useState(false);
   const isIncome = transaction.type === 'income';
   const isExpense = transaction.type === 'expense';
   const isTransfer = transaction.type === 'transfer';
 
   const amount = Number(transaction.amount);
 
-  // Formatear moneda
   function formatCurrency(val, currency = 'USD') {
     return new Intl.NumberFormat('es', {
       style: 'currency',
@@ -25,7 +22,6 @@ export default function TransactionCard({ transaction, onDelete }) {
     }).format(val);
   }
 
-  // Formatear fecha
   function formatDate(dateStr) {
     if (!dateStr) return '';
     const date = new Date(dateStr + 'T00:00:00');
@@ -35,10 +31,14 @@ export default function TransactionCard({ transaction, onDelete }) {
     }).format(date);
   }
 
+  function handleDeleteConfirm() {
+    onDelete(transaction.id);
+    Toast.show('Transacción eliminada y balance revertido', { type: 'ios', status: 'success' });
+  }
+
   const accountName = transaction.account?.name || 'Cuenta eliminada';
   const accountCurrency = transaction.account?.currency || 'USD';
 
-  // Determinar icono y título
   let icon = '💸';
   let title = transaction.description || 'Transacción';
 
@@ -52,47 +52,54 @@ export default function TransactionCard({ transaction, onDelete }) {
   }
 
   return (
-    <article className={`tx-card tx-card--${transaction.type}`}>
-      <div className="tx-card__icon-wrapper">
-        <span className="tx-card__icon">{icon}</span>
-      </div>
-
-      <div className="tx-card__details">
-        <h4 className="tx-card__title">{title}</h4>
-        <div className="tx-card__meta">
-          <span className="tx-card__account">
-            {transaction.account?.icon || '🏦'} {accountName}
-            {isTransfer && transaction.to_account && (
-              <span> ➔ {transaction.to_account.icon} {transaction.to_account.name}</span>
-            )}
-          </span>
-          {transaction.category && transaction.description && (
-            <span className="tx-card__category"> • {transaction.category.name}</span>
-          )}
+    <>
+      <article className={`tx-card tx-card--${transaction.type}`}>
+        <div className="tx-card__icon-wrapper">
+          <span className="tx-card__icon">{icon}</span>
         </div>
-      </div>
 
-      <div className="tx-card__right">
-        <span className={`tx-card__amount tx-card__amount--${transaction.type}`}>
-          {isIncome ? '+' : isExpense ? '-' : ''}
-          {formatCurrency(amount, accountCurrency)}
-        </span>
-        <span className="tx-card__date">{formatDate(transaction.transaction_date)}</span>
-      </div>
+        <div className="tx-card__details">
+          <h4 className="tx-card__title">{title}</h4>
+          <div className="tx-card__meta">
+            <span className="tx-card__account">
+              {transaction.account?.icon || '🏦'} {accountName}
+              {isTransfer && transaction.to_account && (
+                <span> ➔ {transaction.to_account.icon} {transaction.to_account.name}</span>
+              )}
+            </span>
+            {transaction.category && transaction.description && (
+              <span className="tx-card__category"> • {transaction.category.name}</span>
+            )}
+          </div>
+        </div>
 
-      {onDelete && (
-        <button
-          onClick={() => {
-            if (window.confirm('¿Eliminar esta transacción? El balance de la cuenta se revertirá automáticamente.')) {
-              onDelete(transaction.id);
-            }
-          }}
-          className="tx-card__delete"
-          aria-label="Eliminar transacción"
-        >
-          ✕
-        </button>
-      )}
-    </article>
+        <div className="tx-card__right">
+          <span className={`tx-card__amount tx-card__amount--${transaction.type}`}>
+            {isIncome ? '+' : isExpense ? '-' : ''}
+            {formatCurrency(amount, accountCurrency)}
+          </span>
+          <span className="tx-card__date">{formatDate(transaction.transaction_date)}</span>
+        </div>
+
+        {onDelete && (
+          <button
+            onClick={() => setShowConfirm(true)}
+            className="tx-card__delete"
+            aria-label="Eliminar transacción"
+          >
+            ✕
+          </button>
+        )}
+      </article>
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={handleDeleteConfirm}
+        title="¿Eliminar Transacción?"
+        message="¿Eliminar esta transacción? El balance de la cuenta asociada se revertirá automáticamente."
+        confirmText="Eliminar y revertir"
+      />
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { useAccounts } from '@/hooks/useAccounts';
 import TransactionCard from '@/components/TransactionCard';
 import TransactionForm from '@/components/TransactionForm';
 import Modal from '@/components/Modal';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * Formatea moneda para el resumen
@@ -58,12 +59,14 @@ export default function TransactionsPage() {
 
     if (insertError) {
       setFormError(insertError.message);
+      Toast.show(insertError.message, { type: 'ios', status: 'error' });
       setFormLoading(false);
       return;
     }
 
     setFormLoading(false);
     setShowModal(false);
+    Toast.show('Movimiento registrado con éxito', { type: 'ios', status: 'success' });
   }
 
   if (loading) {
@@ -209,6 +212,7 @@ export default function TransactionsPage() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         title="Nuevo Movimiento"
+        animation="bottom"
       >
         {formError && <div className="page-error" role="alert">{formError}</div>}
         <TransactionForm

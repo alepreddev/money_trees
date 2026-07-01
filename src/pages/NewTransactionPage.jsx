@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTransactions } from '@/hooks/useTransactions';
 import TransactionForm from '@/components/TransactionForm';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * NewTransactionPage — Página dedicada para registro rápido de transacciones.
@@ -21,11 +22,13 @@ export default function NewTransactionPage() {
 
     if (insertError) {
       setError(insertError.message);
+      Toast.show(insertError.message, { type: 'ios', status: 'error' });
       setLoading(false);
       return;
     }
 
     setLoading(false);
+    Toast.show('Movimiento registrado con éxito', { type: 'ios', status: 'success' });
     // Redirigir al historial una vez creado
     navigate('/transactions');
   }

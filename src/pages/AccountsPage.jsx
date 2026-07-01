@@ -3,6 +3,7 @@ import { useAccounts } from '@/hooks/useAccounts';
 import AccountCard from '@/components/AccountCard';
 import AccountForm from '@/components/AccountForm';
 import Modal from '@/components/Modal';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * Formatea un número como moneda.
@@ -50,12 +51,14 @@ export default function AccountsPage() {
 
     if (createError) {
       setFormError(createError.message);
+      Toast.show(createError.message, { type: 'ios', status: 'error' });
       setFormLoading(false);
       return;
     }
 
     setFormLoading(false);
     setShowCreateModal(false);
+    Toast.show('¡Cuenta creada exitosamente!', { type: 'ios', status: 'success' });
   }
 
   async function handleUpdate(data) {
@@ -68,12 +71,14 @@ export default function AccountsPage() {
 
     if (updateError) {
       setFormError(updateError.message);
+      Toast.show(updateError.message, { type: 'ios', status: 'error' });
       setFormLoading(false);
       return;
     }
 
     setFormLoading(false);
     setEditingAccount(null);
+    Toast.show('Cuenta actualizada', { type: 'ios', status: 'success' });
   }
 
   async function handleDelete(id) {
@@ -173,6 +178,7 @@ export default function AccountsPage() {
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         title="Nueva Cuenta"
+        animation="top"
       >
         {formError && (
           <div className="page-error" role="alert">{formError}</div>
@@ -189,6 +195,7 @@ export default function AccountsPage() {
         isOpen={!!editingAccount}
         onClose={() => setEditingAccount(null)}
         title="Editar Cuenta"
+        animation="right"
       >
         {formError && (
           <div className="page-error" role="alert">{formError}</div>
