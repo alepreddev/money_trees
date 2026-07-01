@@ -164,45 +164,17 @@ export default function BudgetsPage() {
       {/* ================= PESTAÑA 1: PRESUPUESTOS ================= */}
       {activeTab === 'budgets' && (
         <section className="tab-pane">
-          {/* Barra selectora de mes */}
-          <div
-            className="month-selector-bar"
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              backgroundColor: 'var(--color-surface)',
-              padding: '1rem 1.25rem',
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--color-border)',
-              marginBottom: '1.5rem',
-              boxShadow: 'var(--shadow-sm)',
-            }}
-          >
-            <button onClick={goToPreviousMonth} className="entity-form__btn entity-form__btn--secondary" style={{ padding: '0.5rem 1rem' }}>
-              ◀ Anterior
+          {/* Navegador de mes y año estándar */}
+          <div className="tx-month-nav">
+            <button onClick={goToPreviousMonth} className="tx-month-nav__btn" aria-label="Mes anterior">
+              ←
             </button>
-            <div style={{ textAlign: 'center' }}>
-              <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 700, color: 'var(--color-text)' }}>
-                {MONTH_NAMES[month - 1]} {year}
-              </h3>
-              <button
-                onClick={goToCurrentMonth}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--color-primary)',
-                  fontSize: '0.8125rem',
-                  cursor: 'pointer',
-                  padding: '2px 0',
-                  fontWeight: 600,
-                }}
-              >
-                Ir al mes actual
-              </button>
+            <div className="tx-month-nav__current" onClick={goToCurrentMonth} title="Volver al mes actual">
+              <span className="tx-month-nav__month">{MONTH_NAMES[month - 1]}</span>
+              <span className="tx-month-nav__year">{year}</span>
             </div>
-            <button onClick={goToNextMonth} className="entity-form__btn entity-form__btn--secondary" style={{ padding: '0.5rem 1rem' }}>
-              Siguiente ▶
+            <button onClick={goToNextMonth} className="tx-month-nav__btn" aria-label="Mes siguiente">
+              →
             </button>
           </div>
 

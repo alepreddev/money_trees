@@ -69,14 +69,6 @@ export default function TransactionsPage() {
     Toast.show('Movimiento registrado con éxito', { type: 'ios', status: 'success' });
   }
 
-  if (loading) {
-    return (
-      <div className="loading-screen">
-        <p>Cargando flujo de caja...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="transactions-page">
       {/* Header */}
@@ -181,7 +173,11 @@ export default function TransactionsPage() {
       </div>
 
       {/* Lista de transacciones */}
-      {transactions.length === 0 ? (
+      {loading ? (
+        <div className="loading-state" style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+          Cargando movimientos de {getMonthName(filters.month)}...
+        </div>
+      ) : transactions.length === 0 ? (
         <div className="empty-state">
           <span className="empty-state__icon">📝</span>
           <h3 className="empty-state__title">Sin movimientos este mes</h3>

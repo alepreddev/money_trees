@@ -5,6 +5,7 @@ Este documento es la hoja de ruta interactiva para el desarrollo de la aplicaci�
 ## 📌 Principios de Diseño del Sistema
 - **Fricción Cero:** El flujo de registro de transacciones debe requerir el mínimo de clics posibles.
 - **Consistencia de Datos:** El backend (PostgreSQL) gestiona de forma estricta los cálculos lógicos críticos (balances y triggers).
+- **Estándares Visuales y de UX:** Toda la interfaz debe regirse por los patrones unificados descritos en [UI_STANDARDS.md](file:///var/www/html/money_trees/UI_STANDARDS.md) (navegación de fechas, carga dinámica sin recargar contenedor, formularios y modales).
 - **Seguridad y Aislamiento:** Uso mandatorio de **pnpm** para mitigar riesgos en la cadena de suministro de paquetes y políticas **RLS** para restringir accesos en base de datos.
 
 ---
