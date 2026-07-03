@@ -409,28 +409,31 @@ body {
 }
 
 .app-bottom-nav__item--primary {
-  font-size: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
 }
 
 .app-bottom-nav__item--primary .app-bottom-nav__icon {
   font-size: 1.5rem;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
   border-radius: var(--radius-full);
-  border: 3px solid #fff;
-  box-shadow: 0 4px 14px rgba(108, 92, 231, 0.35);
-  margin-top: -1.5rem;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+  margin: 0;
   transition: var(--transition-spring);
 }
 
 .app-bottom-nav__item--primary:hover .app-bottom-nav__icon {
-  transform: scale(1.08) translateY(-2px);
-  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.45);
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.45);
 }
 
 /* ============================================
