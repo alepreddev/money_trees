@@ -113,7 +113,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 1.5rem;
-  background: linear-gradient(135deg, var(--color-bg) 0%, #E8E5F8 50%, #DDD8F5 100%);
+  background: var(--color-bg);
 }
 
 .auth-card {
@@ -129,6 +129,37 @@ body {
   border: 1px solid var(--color-border-light);
 }
 
+.auth-card--split {
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  padding: 0;
+  overflow: hidden;
+  gap: 0;
+}
+
+.auth-card__form-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  padding: 3rem 2.75rem;
+}
+
+.auth-card__visual {
+  display: flex;
+  position: relative;
+  background: var(--color-surface-raised);
+  overflow: hidden;
+}
+
+.auth-card__banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .auth-card__header {
   display: flex;
   flex-direction: column;
@@ -136,19 +167,44 @@ body {
   text-align: center;
 }
 
+.auth-card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+}
+
+.auth-card__logo-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
 .auth-card__title {
   font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-text);
 }
 
 .auth-card__subtitle {
   color: var(--color-text-secondary);
   font-size: 0.9375rem;
+}
+
+@media (max-width: 768px) {
+  .auth-card--split {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+  }
+  
+  .auth-card__visual {
+    display: none;
+  }
+  
+  .auth-card__form-section {
+    padding: 2.25rem 1.75rem;
+  }
 }
 
 .auth-form {
@@ -290,6 +346,13 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.app-header__logo-img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .app-nav {

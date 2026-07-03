@@ -21,7 +21,7 @@ export default function AppLayout() {
       {/* === HEADER / SIDEBAR (Desktop) === */}
       <header className="app-header">
         <div className="app-header__brand">
-          <h1>Money Trees</h1>
+          <img src="/images/mt-icon.png" alt="Money Trees" className="app-header__logo-img" />
         </div>
 
         <nav className="app-nav">

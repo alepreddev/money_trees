@@ -22,3 +22,5 @@ dist/
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+plan_seguridad.md
