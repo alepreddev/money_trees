@@ -15,9 +15,11 @@ import { Window } from '@/lib/dinamic-windows/script';
 export default function Modal({ isOpen, onClose, title, children, sizeClass = '', animation = 'top' }) {
   const overlayRef = useRef(null);
   const [mounted, setMounted] = useState(isOpen);
+  const isClosingRef = useRef(false);
 
   useEffect(() => {
     if (isOpen) {
+      isClosingRef.current = false;
       setMounted(true);
       const timer = requestAnimationFrame(() => {
         if (overlayRef.current) {
@@ -25,26 +27,17 @@ export default function Modal({ isOpen, onClose, title, children, sizeClass = ''
         }
       });
       return () => cancelAnimationFrame(timer);
-    } else if (mounted && overlayRef.current) {
+    } else if (mounted && overlayRef.current && !isClosingRef.current) {
+      isClosingRef.current = true;
       Window.closeWindow(overlayRef.current, () => {
         setMounted(false);
+        isClosingRef.current = false;
       });
     }
   }, [isOpen]);
 
   function handleBackdropClick(e) {
     if (e.target === overlayRef.current) {
-      handleClose();
-    }
-  }
-
-  function handleClose() {
-    if (overlayRef.current) {
-      Window.closeWindow(overlayRef.current, () => {
-        setMounted(false);
-        onClose();
-      });
-    } else {
       onClose();
     }
   }
@@ -56,7 +49,7 @@ export default function Modal({ isOpen, onClose, title, children, sizeClass = ''
   return (
     <div
       ref={overlayRef}
-      className={`win-overlay ${isOpen ? 'is-active' : ''}`}
+      className="win-overlay"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
@@ -66,7 +59,7 @@ export default function Modal({ isOpen, onClose, title, children, sizeClass = ''
         <div className="win-header">
           <h3>{title}</h3>
           <button
-            onClick={handleClose}
+            onClick={onClose}
             className="win-close-btn"
             aria-label="Cerrar ventana"
           >

@@ -1,8 +1,8 @@
 /* ============================================
    Money Trees — Design System
    ============================================
-   Inspirado en: Neumorphic Finance UI + Auralis Clean
-   Paleta: Violeta/Indigo con toques de verde y rojo
+   Inspirado en: Minimalist Clean White + Sleek Jet Black
+   Paleta: Blanco Minimalista / Carbón Elegante con semánticos en verde y naranja
    Tipografía: Inter (Google Fonts cargada en index.html)
    ============================================ */
 
@@ -11,30 +11,30 @@
 
 /* --- Design Tokens --- */
 :root {
-  /* Colores primarios */
-  --color-primary: #6C5CE7;
-  --color-primary-light: #A29BFE;
-  --color-primary-dark: #5A4BD1;
-  --color-primary-bg: #F0EDFF;
-  --color-primary-ghost: rgba(108, 92, 231, 0.08);
+  /* Colores primarios (Minimalist Jet Black / Charcoal) */
+  --color-primary: #111827;
+  --color-primary-light: #374151;
+  --color-primary-dark: #030712;
+  --color-primary-bg: #F3F4F6;
+  --color-primary-ghost: rgba(17, 24, 39, 0.05);
 
-  /* Superficies */
+  /* Superficies (Minimalist Clean White) */
   --color-surface: #FFFFFF;
-  --color-surface-raised: #F8F7FC;
-  --color-surface-sunken: #F1F0F7;
-  --color-surface-hover: #EEEDFA;
+  --color-surface-raised: #F8F9FA;
+  --color-surface-sunken: #F1F3F5;
+  --color-surface-hover: #EEF0F2;
 
   /* Fondo general */
-  --color-bg: #F4F3FA;
+  --color-bg: #FAFBFD;
 
   /* Texto */
-  --color-text: #1A1A2E;
-  --color-text-secondary: #6B7280;
+  --color-text: #111827;
+  --color-text-secondary: #4B5563;
   --color-text-muted: #9CA3AF;
 
   /* Bordes */
-  --color-border: #E5E4EF;
-  --color-border-light: #EDEDF5;
+  --color-border: #E5E7EB;
+  --color-border-light: #F2F4F7;
 
   /* Semánticos */
   --color-income: #00B894;
@@ -47,12 +47,12 @@
   --color-danger-bg: #FDEDED;
   --color-warning: #FDCB6E;
 
-  /* Sombras (estilo neumórfico suave) */
-  --shadow-sm: 0 1px 3px rgba(108, 92, 231, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 14px rgba(108, 92, 231, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 30px rgba(108, 92, 231, 0.12), 0 4px 10px rgba(0, 0, 0, 0.04);
-  --shadow-card: 0 2px 8px rgba(108, 92, 231, 0.06);
-  --shadow-inset: inset 0 2px 4px rgba(108, 92, 231, 0.06);
+  /* Sombras minimalistas limpias */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.04);
 
   /* Radios */
   --radius-sm: 0.5rem;
@@ -203,14 +203,14 @@ body {
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
-  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.18);
   transition: var(--transition-base);
   letter-spacing: -0.01em;
 }
 
 .auth-form__submit:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+  box-shadow: 0 6px 20px rgba(17, 24, 39, 0.25);
 }
 
 .auth-form__submit:active:not(:disabled) {
@@ -375,9 +375,9 @@ body {
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1.5px solid var(--color-border-light);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
-  box-shadow: 0 8px 32px rgba(108, 92, 231, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
   z-index: 50;
 }
 
@@ -426,14 +426,14 @@ body {
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
   border-radius: var(--radius-full);
-  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.22);
   margin: 0;
   transition: var(--transition-spring);
 }
 
 .app-bottom-nav__item--primary:hover .app-bottom-nav__icon {
   transform: scale(1.06);
-  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.45);
+  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.3);
 }
 
 /* ============================================
@@ -476,14 +476,14 @@ body {
   white-space: nowrap;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
-  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.25);
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.18);
   transition: var(--transition-base);
   letter-spacing: -0.01em;
 }
 
 .page-header__action:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+  box-shadow: 0 4px 16px rgba(17, 24, 39, 0.25);
 }
 
 /* ============================================
@@ -791,12 +791,12 @@ body {
 .entity-form__btn--primary {
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
-  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.25);
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.18);
 }
 
 .entity-form__btn--primary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(108, 92, 231, 0.35);
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.25);
 }
 
 /* ============================================
@@ -1119,13 +1119,13 @@ body {
   margin-top: 0.75rem;
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: #fff;
-  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.25);
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.18);
   transition: var(--transition-base);
 }
 
 .empty-state__action:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(108, 92, 231, 0.35);
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.25);
 }
 
 /* ============================================

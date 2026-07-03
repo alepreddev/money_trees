@@ -10,8 +10,10 @@ import './style.css';
  */
 export class WindowSystem {
     constructor() {
-        this.animationDuration = 400; 
-        this.easing = 'cubic-bezier(0.32, 0.72, 0, 1)';
+        this.openDuration = 320; 
+        this.closeDuration = 250;
+        this.openEasing = 'cubic-bezier(0.16, 1, 0.3, 1)';
+        this.closeEasing = 'cubic-bezier(0.32, 0, 0.67, 0)';
     }
 
     openWindow(overlayEl) {
@@ -38,8 +40,8 @@ export class WindowSystem {
             { transform: from, opacity: 0 },
             { transform: 'translate(0, 0) scale(1)', opacity: 1 }
         ], {
-            duration: this.animationDuration,
-            easing: this.easing,
+            duration: this.openDuration,
+            easing: this.openEasing,
             fill: 'forwards'
         });
     }
@@ -52,11 +54,17 @@ export class WindowSystem {
 
         const card = overlayEl.querySelector('.win-card');
 
+        // Empezar a desvanecer el fondo inmediatamente
+        overlayEl.classList.remove('is-active');
+
         if (!card) {
-            overlayEl.classList.remove('is-active');
-            if (onFinish) onFinish();
+            setTimeout(() => {
+                if (onFinish) onFinish();
+            }, this.closeDuration);
             return;
         }
+
+        card.getAnimations().forEach(a => a.cancel());
 
         const direction = this._getDirection(card);
         const to = this._getTranslateFrom(direction);
@@ -65,15 +73,13 @@ export class WindowSystem {
             { transform: 'translate(0, 0) scale(1)', opacity: 1 },
             { transform: to, opacity: 0 }
         ], {
-            duration: this.animationDuration * 0.7,
-            easing: 'cubic-bezier(0.4, 0, 1, 1)',
+            duration: this.closeDuration,
+            easing: this.closeEasing,
             fill: 'forwards'
         });
 
         animation.onfinish = () => {
-            overlayEl.classList.remove('is-active');
             card.style.visibility = 'hidden';
-            animation.cancel();
             if (onFinish) onFinish();
         };
     }
@@ -93,11 +99,11 @@ export class WindowSystem {
      */
     _getTranslateFrom(direction) {
         switch (direction) {
-            case 'top':    return 'translateY(-60px) scale(0.95)';
-            case 'bottom': return 'translateY(60px) scale(0.95)';
-            case 'left':   return 'translateX(-80px) scale(0.95)';
-            case 'right':  return 'translateX(80px) scale(0.95)';
-            default:       return 'translateY(-60px) scale(0.95)';
+            case 'top':    return 'translateY(-24px) scale(0.97)';
+            case 'bottom': return 'translateY(24px) scale(0.97)';
+            case 'left':   return 'translateX(-28px) scale(0.97)';
+            case 'right':  return 'translateX(28px) scale(0.97)';
+            default:       return 'translateY(-24px) scale(0.97)';
         }
     }
 }

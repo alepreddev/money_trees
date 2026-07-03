@@ -1,8 +1,8 @@
 /* --- Estilos Base del Sistema de Ventanas (dinamic-windows por Jose Arocha) --- */
 /* --- Mejoras v2: bordes suaves, sombra mejorada, overflow oculto durante animación --- */
 :root {
-    --win-speed: 450ms;
-    --win-ease: cubic-bezier(0.32, 0.72, 0, 1);
+    --win-speed: 250ms;
+    --win-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* El fondo oscuro (Backdrop) */
@@ -12,9 +12,9 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.32);
-    /* backdrop-filter: blur(10px); */
-    /* -webkit-backdrop-filter: blur(10px); */
+    background: rgba(0, 0, 0, 0.38);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     
     display: flex;
     justify-content: center;
@@ -52,9 +52,8 @@
     max-height: 85vh;
     overflow: hidden;           /* Oculta contenido que sobresale durante scale */
     position: relative;
-    will-change: transform, opacity, border-radius;
+    will-change: transform, opacity;
     opacity: 0;
-    /* Empieza invisible hasta que JS lo anime */
 }
 
 /* Scroll solo en el body, no en la card entera — evita artefactos de scroll durante animación */
