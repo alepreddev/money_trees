@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import SettingsModal from '@/components/SettingsModal';
 
 /**
  * AppLayout — Layout principal de la aplicación autenticada.
@@ -8,9 +10,15 @@ import { useAuth } from '@/contexts/AuthContext';
  * - Header con navegación principal y datos del usuario
  * - Contenido principal (Outlet de React Router)
  * - Barra de navegación inferior (mobile)
+ * - Modal de configuración de usuario
  */
 export default function AppLayout() {
-  const { profile, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url || null;
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || profile?.email || user?.email || 'Usuario';
+  const initial = displayName ? displayName.charAt(0).toUpperCase() : 'U';
 
   async function handleSignOut() {
     await signOut();
@@ -43,13 +51,22 @@ export default function AppLayout() {
         </nav>
 
         <div className="app-header__user">
-          {profile && (
+          <button
+            type="button"
+            onClick={() => setIsSettingsOpen(true)}
+            className="app-header__user-btn"
+            aria-label="Abrir configuración de cuenta"
+          >
             <span className="app-header__username">
-              {profile.full_name || profile.email}
+              {displayName}
             </span>
-          )}
-          <button onClick={handleSignOut} className="app-header__signout">
-            Cerrar sesión
+            <div className="app-header__avatar">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName} className="app-header__avatar-img" />
+              ) : (
+                <span>{initial}</span>
+              )}
+            </div>
           </button>
         </div>
       </header>
@@ -81,6 +98,15 @@ export default function AppLayout() {
           <span className="app-bottom-nav__label">Metas</span>
         </NavLink>
       </nav>
+
+      {/* === MODAL DE CONFIGURACIÓN === */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        user={user}
+        profile={profile}
+        onSignOut={handleSignOut}
+      />
     </div>
   );
 }
