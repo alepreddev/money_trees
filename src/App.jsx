@@ -18,7 +18,7 @@ const BudgetsPage = lazy(() => import('@/pages/BudgetsPage'));
 function PageLoader() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh', color: 'var(--color-text-secondary)' }}>
-      <span>Cargando módulo...</span>
+      {/* <span>Cargando módulo...</span> */}
     </div>
   );
 }
