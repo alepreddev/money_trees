@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { sanitizeText } from '@/lib/validators';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * Iconos disponibles para categorías.
@@ -28,8 +30,14 @@ export default function CategoryForm({ onSubmit, initialData = null, loading = f
   function handleSubmit(e) {
     e.preventDefault();
 
+    const nameVal = sanitizeText(name, { maxLen: 50, fieldName: 'El nombre de la categoría' });
+    if (!nameVal.isValid) {
+      Toast.show(nameVal.error, { type: 'ios', status: 'error' });
+      return;
+    }
+
     onSubmit({
-      name: name.trim(),
+      name: nameVal.value,
       type: currentType,
       icon,
       color,

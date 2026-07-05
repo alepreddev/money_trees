@@ -1,19 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { clearAllCache } from '@/lib/cache';
 
 const AuthContext = createContext(null);
 
 /**
- * AuthProvider — Proveedor global de estado de autenticación.
- * 
- * Expone:
- * - user: Objeto del usuario autenticado (null si no hay sesión)
- * - session: Objeto de sesión activa de Supabase
- * - loading: Boolean mientras se resuelve el estado inicial de auth
- * - profile: Datos del perfil del usuario desde public.profiles
- * - signUp(email, password, metadata): Registro de nuevo usuario
- * - signIn(email, password): Inicio de sesión
- * - signOut(): Cierre de sesión
+ * AuthProvider — Proveedor global de estado de autenticación (Blindado Fase 3).
  */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -23,52 +15,98 @@ export function AuthProvider({ children }) {
 
   // Cargar el perfil del usuario desde public.profiles
   async function fetchProfile(userId) {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
 
-    if (error) {
-      console.error('Error cargando perfil:', error.message);
+      if (error) {
+        console.error('Error cargando perfil:', error.message);
+        // Si el token expiró o es inválido, limpiar sesión para evitar ciclos
+        if (error.code === 'PGRST301' || error.message?.toLowerCase().includes('jwt') || error.message?.toLowerCase().includes('token')) {
+          clearAllCache();
+          supabase.auth.signOut();
+        }
+        return null;
+      }
+      return data;
+    } catch (err) {
+      console.error('Excepción al cargar perfil:', err);
       return null;
     }
-    return data;
   }
 
   useEffect(() => {
+    let isMounted = true;
+
     // 1. Obtener sesión actual al montar
-    supabase.auth.getSession().then(async ({ data: { session: currentSession } }) => {
+    supabase.auth.getSession().then(async ({ data, error }) => {
+      if (!isMounted) return;
+
+      if (error || !data?.session) {
+        if (error) console.warn('Sesión inválida o expirada:', error.message);
+        clearAllCache();
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
+
+      const currentSession = data.session;
       setSession(currentSession);
-      setUser(currentSession?.user ?? null);
+      setUser(currentSession.user ?? null);
 
       if (currentSession?.user) {
         const profileData = await fetchProfile(currentSession.user.id);
-        setProfile(profileData);
+        if (isMounted) setProfile(profileData);
       }
 
-      setLoading(false);
+      if (isMounted) setLoading(false);
+    }).catch((err) => {
+      console.error('Error crítico al resolver sesión:', err);
+      if (isMounted) {
+        clearAllCache();
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+      }
     });
 
     // 2. Escuchar cambios de autenticación en tiempo real
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
+        if (!isMounted) return;
+
+        if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED' || !newSession) {
+          clearAllCache();
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+          setLoading(false);
+          return;
+        }
+
         setSession(newSession);
-        setUser(newSession?.user ?? null);
+        setUser(newSession.user ?? null);
 
         if (newSession?.user) {
           const profileData = await fetchProfile(newSession.user.id);
-          setProfile(profileData);
+          if (isMounted) setProfile(profileData);
         } else {
           setProfile(null);
         }
 
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     );
 
-    // 3. Cleanup al desmontar
+    // 3. Cleanup al desmontar para evitar fugas de memoria
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, []);
@@ -95,6 +133,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signOut() {
+    clearAllCache();
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('Error cerrando sesión:', error.message);

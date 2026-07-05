@@ -1,27 +1,20 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { fetchWithCache, invalidateCache } from '@/lib/cache';
 
 /**
- * useTransactions — Hook para el motor de flujo de caja.
- *
- * Soporta filtros por mes/año, cuenta y tipo.
- * Las transacciones incluyen joins a accounts y categories para mostrar nombres.
- *
- * Retorna:
- * - transactions: Array de transacciones filtradas
- * - loading / error
- * - filters / setFilters: Estado de filtros activos
- * - summary: { totalIncome, totalExpense, netCashFlow } del periodo filtrado
- * - createTransaction(data): Insertar nueva transacción
- * - deleteTransaction(id): Eliminar transacción (trigger revierte balance)
- * - refetch()
+ * useTransactions — Hook para el motor de flujo de caja (con caché y paginación por bloques Fase 2).
  */
 export function useTransactions() {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Paginación incremental
+  const [limit, setLimit] = useState(50);
+  const [hasMore, setHasMore] = useState(false);
 
   // Filtros: mes/año actuales por defecto
   const now = new Date();
@@ -32,8 +25,13 @@ export function useTransactions() {
     type: null,                   // null = todos, 'income', 'expense', 'transfer'
   });
 
-  // --- Fetch transacciones con joins ---
-  const fetchTransactions = useCallback(async () => {
+  // Reset limit al cambiar filtros
+  useEffect(() => {
+    setLimit(50);
+  }, [filters.month, filters.year, filters.accountId, filters.type]);
+
+  // --- Fetch transacciones con joins y paginación por bloques (.range) ---
+  const fetchTransactions = useCallback(async (force = false) => {
     if (!user) return;
 
     setLoading(true);
@@ -44,41 +42,53 @@ export function useTransactions() {
     const lastDay = new Date(filters.year, filters.month, 0).getDate();
     const endDate = `${filters.year}-${String(filters.month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
 
-    let query = supabase
-      .from('transactions')
-      .select(`
-        *,
-        account:accounts!account_id ( id, name, icon, color ),
-        to_account:accounts!to_account_id ( id, name, icon, color ),
-        category:categories!category_id ( id, name, icon, color, type )
-      `)
-      .eq('user_id', user.id)
-      .gte('transaction_date', startDate)
-      .lte('transaction_date', endDate)
-      .order('transaction_date', { ascending: false })
-      .order('created_at', { ascending: false });
+    const cacheKey = `transactions_${user.id}_${filters.year}_${filters.month}_${filters.accountId || 'all'}_${filters.type || 'all'}_${limit}`;
 
-    // Filtro por cuenta
-    if (filters.accountId) {
-      query = query.or(`account_id.eq.${filters.accountId},to_account_id.eq.${filters.accountId}`);
-    }
+    try {
+      const data = await fetchWithCache(cacheKey, async () => {
+        let query = supabase
+          .from('transactions')
+          .select(`
+            *,
+            account:accounts!account_id ( id, name, icon, color ),
+            to_account:accounts!to_account_id ( id, name, icon, color ),
+            category:categories!category_id ( id, name, icon, color, type )
+          `)
+          .eq('user_id', user.id)
+          .gte('transaction_date', startDate)
+          .lte('transaction_date', endDate)
+          .order('transaction_date', { ascending: false })
+          .order('created_at', { ascending: false })
+          .range(0, limit); // Pedimos limit + 1 (de 0 a limit inclusive) para detectar si hay más
 
-    // Filtro por tipo
-    if (filters.type) {
-      query = query.eq('type', filters.type);
-    }
+        // Filtro por cuenta
+        if (filters.accountId) {
+          query = query.or(`account_id.eq.${filters.accountId},to_account_id.eq.${filters.accountId}`);
+        }
 
-    const { data, error: fetchError } = await query;
+        // Filtro por tipo
+        if (filters.type) {
+          query = query.eq('type', filters.type);
+        }
 
-    if (fetchError) {
-      setError(fetchError.message);
+        const { data: resData, error: fetchError } = await query;
+        if (fetchError) throw fetchError;
+        return resData || [];
+      }, 60000, force);
+
+      if (data.length > limit) {
+        setHasMore(true);
+        setTransactions(data.slice(0, limit));
+      } else {
+        setHasMore(false);
+        setTransactions(data);
+      }
+    } catch (err) {
+      setError(err.message || 'Error al obtener transacciones');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setTransactions(data || []);
-    setLoading(false);
-  }, [user, filters]);
+  }, [user, filters, limit]);
 
   useEffect(() => {
     fetchTransactions();
@@ -94,7 +104,6 @@ export function useTransactions() {
         } else if (tx.type === 'expense') {
           acc.totalExpense += amount;
         }
-        // Transfers no alteran el cash flow neto
         acc.netCashFlow = acc.totalIncome - acc.totalExpense;
         return acc;
       },
@@ -115,7 +124,6 @@ export function useTransactions() {
       transaction_date: transaction_date || new Date().toISOString().split('T')[0],
     };
 
-    // Lógica condicional según tipo
     if (type === 'transfer') {
       payload.to_account_id = to_account_id;
       payload.category_id = null;
@@ -140,12 +148,17 @@ export function useTransactions() {
       return { data: null, error: insertError };
     }
 
-    // Agregar al inicio (más reciente primero)
+    // Invalidar cachés relacionadas al cambiar flujo y saldos
+    invalidateCache('transactions_');
+    invalidateCache('dashboard_');
+    invalidateCache('accounts_');
+    invalidateCache('budgets_');
+
     setTransactions((prev) => [data, ...prev]);
     return { data, error: null };
   }
 
-  // --- Eliminar transacción (trigger revierte balance automáticamente) ---
+  // --- Eliminar transacción ---
   async function deleteTransaction(id) {
     setError(null);
 
@@ -160,8 +173,20 @@ export function useTransactions() {
       return { error: deleteError };
     }
 
+    invalidateCache('transactions_');
+    invalidateCache('dashboard_');
+    invalidateCache('accounts_');
+    invalidateCache('budgets_');
+
     setTransactions((prev) => prev.filter((tx) => tx.id !== id));
     return { error: null };
+  }
+
+  // --- Cargar más registros ---
+  function loadMore() {
+    if (hasMore && !loading) {
+      setLimit((prev) => prev + 50);
+    }
   }
 
   // --- Navegar meses ---
@@ -199,11 +224,13 @@ export function useTransactions() {
     filters,
     setFilters,
     summary,
+    hasMore,
+    loadMore,
     createTransaction,
     deleteTransaction,
     goToPreviousMonth,
     goToNextMonth,
     goToCurrentMonth,
-    refetch: fetchTransactions,
+    refetch: () => fetchTransactions(true),
   };
 }

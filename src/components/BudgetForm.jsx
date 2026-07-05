@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { validateAmount } from '@/lib/validators';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * BudgetForm — Formulario para configurar el techo de gasto de una categoría en un mes.
@@ -25,19 +27,22 @@ export default function BudgetForm({ categories = [], initialData, onSubmit, loa
     setError(null);
 
     if (!categoryId) {
-      setError('Debes seleccionar una categoría.');
+      const msg = 'Debes seleccionar una categoría de gasto.';
+      setError(msg);
+      Toast.show(msg, { type: 'ios', status: 'error' });
       return;
     }
 
-    const val = parseFloat(amountLimit);
-    if (isNaN(val) || val <= 0) {
-      setError('El límite de gasto debe ser mayor a 0.');
+    const amountVal = validateAmount(amountLimit, { fieldName: 'El límite de presupuesto' });
+    if (!amountVal.isValid) {
+      setError(amountVal.error);
+      Toast.show(amountVal.error, { type: 'ios', status: 'error' });
       return;
     }
 
     onSubmit({
       category_id: categoryId,
-      amount_limit: val,
+      amount_limit: amountVal.value,
     });
   }
 

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { sanitizeText, validateAmount } from '@/lib/validators';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * Tipos de cuenta disponibles con su metadata.
@@ -35,10 +37,22 @@ export default function AccountForm({ onSubmit, initialData = null, loading = fa
   function handleSubmit(e) {
     e.preventDefault();
 
+    const nameVal = sanitizeText(name, { maxLen: 50, fieldName: 'El nombre de la cuenta' });
+    if (!nameVal.isValid) {
+      Toast.show(nameVal.error, { type: 'ios', status: 'error' });
+      return;
+    }
+
+    const balanceVal = validateAmount(balance, { allowZero: true, allowNegative: true, fieldName: 'El saldo inicial' });
+    if (!balanceVal.isValid) {
+      Toast.show(balanceVal.error, { type: 'ios', status: 'error' });
+      return;
+    }
+
     onSubmit({
-      name,
+      name: nameVal.value,
       type,
-      balance: parseFloat(balance) || 0,
+      balance: balanceVal.value,
       currency,
       icon,
       color,

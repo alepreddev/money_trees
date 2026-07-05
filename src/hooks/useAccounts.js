@@ -1,19 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { fetchWithCache, invalidateCache } from '@/lib/cache';
 
 /**
- * useAccounts — Hook para gestionar las cuentas del usuario.
- *
- * Retorna:
- * - accounts: Array de cuentas del usuario
- * - loading: Estado de carga inicial
- * - error: Error si la consulta falla
- * - totals: { assets, debts, netWorth } calculados
- * - createAccount(data): Crear nueva cuenta
- * - updateAccount(id, data): Actualizar cuenta existente
- * - deleteAccount(id): Eliminar cuenta
- * - refetch(): Recargar manualmente
+ * useAccounts — Hook para gestionar las cuentas del usuario (con caché de Fase 2).
  */
 export function useAccounts() {
   const { user } = useAuth();
@@ -21,27 +12,31 @@ export function useAccounts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // --- Fetch cuentas ---
-  const fetchAccounts = useCallback(async () => {
+  // --- Fetch cuentas con caché (3 min) y deduplicación ---
+  const fetchAccounts = useCallback(async (force = false) => {
     if (!user) return;
 
     setLoading(true);
     setError(null);
 
-    const { data, error: fetchError } = await supabase
-      .from('accounts')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: true });
+    try {
+      const data = await fetchWithCache(`accounts_${user.id}`, async () => {
+        const { data: resData, error: fetchError } = await supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: true });
 
-    if (fetchError) {
-      setError(fetchError.message);
+        if (fetchError) throw fetchError;
+        return resData || [];
+      }, 180000, force);
+
+      setAccounts(data);
+    } catch (err) {
+      setError(err.message || 'Error al obtener cuentas');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setAccounts(data || []);
-    setLoading(false);
   }, [user]);
 
   useEffect(() => {
@@ -53,7 +48,6 @@ export function useAccounts() {
     (acc, account) => {
       const balance = Number(account.balance);
       if (account.type === 'credit_card') {
-        // Tarjeta de crédito: balance negativo = deuda
         acc.debts += Math.abs(balance);
       } else {
         acc.assets += balance;
@@ -87,6 +81,8 @@ export function useAccounts() {
       return { data: null, error: insertError };
     }
 
+    invalidateCache('accounts_');
+    invalidateCache('dashboard_');
     setAccounts((prev) => [...prev, data]);
     return { data, error: null };
   }
@@ -108,6 +104,8 @@ export function useAccounts() {
       return { data: null, error: updateError };
     }
 
+    invalidateCache('accounts_');
+    invalidateCache('dashboard_');
     setAccounts((prev) =>
       prev.map((acc) => (acc.id === id ? data : acc))
     );
@@ -129,6 +127,8 @@ export function useAccounts() {
       return { error: deleteError };
     }
 
+    invalidateCache('accounts_');
+    invalidateCache('dashboard_');
     setAccounts((prev) => prev.filter((acc) => acc.id !== id));
     return { error: null };
   }
@@ -141,6 +141,6 @@ export function useAccounts() {
     createAccount,
     updateAccount,
     deleteAccount,
-    refetch: fetchAccounts,
+    refetch: () => fetchAccounts(true),
   };
 }

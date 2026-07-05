@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { sanitizeText, validateAmount, validateDate } from '@/lib/validators';
+import { Toast } from '@/lib/alerts/alerts';
 
 const GOAL_ICONS = ['🎯', '🛡️', '🏖️', '🚗', '🏡', '💻', '📚', '📈', '🚀', '✈️'];
 
@@ -40,24 +42,43 @@ export default function SavingGoalForm({ initialData, onSubmit, loading, onCance
     e.preventDefault();
     setError(null);
 
-    if (!name.trim()) {
-      setError('El nombre de la meta es obligatorio.');
+    const nameVal = sanitizeText(name, { maxLen: 50, fieldName: 'El nombre de la meta' });
+    if (!nameVal.isValid) {
+      setError(nameVal.error);
+      Toast.show(nameVal.error, { type: 'ios', status: 'error' });
       return;
     }
 
-    const tVal = parseFloat(targetAmount);
-    if (isNaN(tVal) || tVal <= 0) {
-      setError('El objetivo de ahorro debe ser mayor a 0.');
+    const tVal = validateAmount(targetAmount, { fieldName: 'El objetivo de ahorro' });
+    if (!tVal.isValid) {
+      setError(tVal.error);
+      Toast.show(tVal.error, { type: 'ios', status: 'error' });
       return;
     }
 
-    const cVal = parseFloat(currentAmount) || 0;
+    const cVal = validateAmount(currentAmount, { allowZero: true, fieldName: 'El monto acumulado actual' });
+    if (!cVal.isValid) {
+      setError(cVal.error);
+      Toast.show(cVal.error, { type: 'ios', status: 'error' });
+      return;
+    }
+
+    let validDate = null;
+    if (targetDate && targetDate.trim()) {
+      const dateVal = validateDate(targetDate, { fieldName: 'La fecha objetivo' });
+      if (!dateVal.isValid) {
+        setError(dateVal.error);
+        Toast.show(dateVal.error, { type: 'ios', status: 'error' });
+        return;
+      }
+      validDate = dateVal.value;
+    }
 
     onSubmit({
-      name: name.trim(),
-      target_amount: tVal,
-      current_amount: cVal,
-      target_date: targetDate || null,
+      name: nameVal.value,
+      target_amount: tVal.value,
+      current_amount: cVal.value,
+      target_date: validDate,
       icon,
       color,
       is_emergency_fund: isEmergencyFund,

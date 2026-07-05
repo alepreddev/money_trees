@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAccounts } from '@/hooks/useAccounts';
 import { useCategories } from '@/hooks/useCategories';
+import { validateAmount, sanitizeText, validateDate, validateTransfer } from '@/lib/validators';
+import { Toast } from '@/lib/alerts/alerts';
 
 /**
  * TransactionForm — Formulario unificado de transacción rápida (Fricción Cero).
@@ -48,21 +50,55 @@ export default function TransactionForm({ onSubmit, loading = false, onCancel, d
   function handleSubmit(e) {
     e.preventDefault();
 
-    // Validaciones
-    if (!amount || Number(amount) <= 0) return;
-    if (!accountId) return;
-    if (type === 'transfer' && !toAccountId) return;
-    if (type !== 'transfer' && !categoryId) return;
-    if (type === 'transfer' && accountId === toAccountId) return;
+    // Validaciones estrictas con retroalimentación visual (Fase 1 Plan de Seguridad)
+    const amountVal = validateAmount(amount, { fieldName: 'El monto' });
+    if (!amountVal.isValid) {
+      Toast.show(amountVal.error, { type: 'ios', status: 'error' });
+      return;
+    }
+
+    if (!accountId) {
+      Toast.show('Debes seleccionar una cuenta de origen.', { type: 'ios', status: 'error' });
+      return;
+    }
+
+    if (type === 'transfer') {
+      const transferVal = validateTransfer(accountId, toAccountId);
+      if (!transferVal.isValid) {
+        Toast.show(transferVal.error, { type: 'ios', status: 'error' });
+        return;
+      }
+    } else {
+      if (!categoryId) {
+        Toast.show('Debes seleccionar una categoría para clasificar el movimiento.', { type: 'ios', status: 'error' });
+        return;
+      }
+    }
+
+    const dateVal = validateDate(transactionDate, { fieldName: 'La fecha de transacción' });
+    if (!dateVal.isValid) {
+      Toast.show(dateVal.error, { type: 'ios', status: 'error' });
+      return;
+    }
+
+    let cleanDesc = '';
+    if (description && description.trim()) {
+      const descVal = sanitizeText(description, { maxLen: 150, fieldName: 'La descripción' });
+      if (!descVal.isValid) {
+        Toast.show(descVal.error, { type: 'ios', status: 'error' });
+        return;
+      }
+      cleanDesc = descVal.value;
+    }
 
     onSubmit({
       type,
-      amount: Number(amount),
+      amount: amountVal.value,
       account_id: accountId,
       to_account_id: type === 'transfer' ? toAccountId : null,
       category_id: type !== 'transfer' ? categoryId : null,
-      description,
-      transaction_date: transactionDate,
+      description: cleanDesc,
+      transaction_date: dateVal.value,
     });
 
     // Reset después de enviar

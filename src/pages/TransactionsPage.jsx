@@ -38,6 +38,8 @@ export default function TransactionsPage() {
     filters,
     setFilters,
     summary,
+    hasMore,
+    loadMore,
     createTransaction,
     deleteTransaction,
     goToPreviousMonth,
@@ -200,6 +202,26 @@ export default function TransactionsPage() {
               onDelete={deleteTransaction}
             />
           ))}
+          {hasMore && (
+            <div style={{ textAlign: 'center', marginTop: '1.5rem', marginBottom: '2rem' }}>
+              <button
+                onClick={loadMore}
+                style={{
+                  padding: '0.75rem 2rem',
+                  borderRadius: 'var(--radius-full)',
+                  fontWeight: '600',
+                  background: 'var(--color-surface-raised)',
+                  border: '1px solid var(--color-border)',
+                  color: 'var(--color-text)',
+                  cursor: 'pointer',
+                  boxShadow: 'var(--shadow-sm)',
+                  transition: 'var(--transition-base)',
+                }}
+              >
+                ↓ Cargar más movimientos
+              </button>
+            </div>
+          )}
         </div>
       )}
 

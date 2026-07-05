@@ -1,24 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
+import { fetchWithCache, invalidateCache } from '@/lib/cache';
 
 /**
- * useCategories — Hook para gestionar categorías del usuario.
- *
- * Las categorías pueden ser:
- * - Globales del sistema (is_system = true, user_id = null)
- * - Personalizadas del usuario (is_system = false, user_id = auth.uid())
- *
- * Retorna:
- * - categories: Todas las categorías visibles (sistema + propias)
- * - incomeCategories: Filtradas por type='income'
- * - expenseCategories: Filtradas por type='expense'
- * - userCategories: Solo las personalizadas del usuario
- * - loading / error
- * - createCategory(data): Crear categoría personalizada
- * - updateCategory(id, data): Actualizar categoría propia
- * - deleteCategory(id): Eliminar categoría propia
- * - refetch()
+ * useCategories — Hook para gestionar categorías del usuario (con caché de Fase 2).
  */
 export function useCategories() {
   const { user } = useAuth();
@@ -26,28 +12,31 @@ export function useCategories() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // --- Fetch categorías (sistema + propias) ---
-  const fetchCategories = useCallback(async () => {
+  // --- Fetch categorías con caché (5 min) y deduplicación ---
+  const fetchCategories = useCallback(async (force = false) => {
     if (!user) return;
 
     setLoading(true);
     setError(null);
 
-    // RLS ya filtra: user_id = auth.uid() OR is_system = true
-    const { data, error: fetchError } = await supabase
-      .from('categories')
-      .select('*')
-      .order('is_system', { ascending: false })
-      .order('name', { ascending: true });
+    try {
+      const data = await fetchWithCache(`categories_${user.id}`, async () => {
+        const { data: resData, error: fetchError } = await supabase
+          .from('categories')
+          .select('*')
+          .order('is_system', { ascending: false })
+          .order('name', { ascending: true });
 
-    if (fetchError) {
-      setError(fetchError.message);
+        if (fetchError) throw fetchError;
+        return resData || [];
+      }, 300000, force);
+
+      setCategories(data);
+    } catch (err) {
+      setError(err.message || 'Error al obtener categorías');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setCategories(data || []);
-    setLoading(false);
   }, [user]);
 
   useEffect(() => {
@@ -63,7 +52,6 @@ export function useCategories() {
   async function createCategory({ name, type, icon = '📋', color = '#8b5cf6' }) {
     setError(null);
 
-    // Validación: tipo debe ser 'income' o 'expense'
     if (!['income', 'expense'].includes(type)) {
       const msg = 'El tipo de categoría debe ser "income" o "expense".';
       setError(msg);
@@ -88,11 +76,13 @@ export function useCategories() {
       return { data: null, error: insertError };
     }
 
+    invalidateCache('categories_');
+    invalidateCache('dashboard_');
     setCategories((prev) => [...prev, data]);
     return { data, error: null };
   }
 
-  // --- Actualizar categoría (solo propias) ---
+  // --- Actualizar categoría ---
   async function updateCategory(id, updates) {
     setError(null);
 
@@ -110,13 +100,15 @@ export function useCategories() {
       return { data: null, error: updateError };
     }
 
+    invalidateCache('categories_');
+    invalidateCache('dashboard_');
     setCategories((prev) =>
       prev.map((cat) => (cat.id === id ? data : cat))
     );
     return { data, error: null };
   }
 
-  // --- Eliminar categoría (solo propias) ---
+  // --- Eliminar categoría ---
   async function deleteCategory(id) {
     setError(null);
 
@@ -132,6 +124,8 @@ export function useCategories() {
       return { error: deleteError };
     }
 
+    invalidateCache('categories_');
+    invalidateCache('dashboard_');
     setCategories((prev) => prev.filter((cat) => cat.id !== id));
     return { error: null };
   }
@@ -146,6 +140,6 @@ export function useCategories() {
     createCategory,
     updateCategory,
     deleteCategory,
-    refetch: fetchCategories,
+    refetch: () => fetchCategories(true),
   };
 }
