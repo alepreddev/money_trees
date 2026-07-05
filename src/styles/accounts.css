@@ -1,0 +1,111 @@
+/* ============================================
+   ACCOUNTS PAGE STYLES
+   ============================================ */
+.account-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--account-color, var(--color-primary));
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition-base);
+}
+
+.account-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.account-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-card__icon {
+  font-size: 1.375rem;
+}
+
+.account-card__type {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.account-card__name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.account-card__balance {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+}
+
+.account-card__balance--negative {
+  color: var(--color-expense);
+}
+
+.account-card__actions {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.account-card__btn {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-light);
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.account-card__btn:hover {
+  background: var(--color-surface-hover);
+}
+
+.account-card__btn--danger:hover {
+  background: var(--color-danger-bg);
+  border-color: rgba(214, 48, 49, 0.2);
+}
+
+.accounts-summary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.accounts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .accounts-summary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .accounts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .accounts-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

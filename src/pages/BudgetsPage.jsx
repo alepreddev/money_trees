@@ -10,6 +10,7 @@ import SavingGoalCard from '@/components/SavingGoalCard';
 import SavingGoalForm from '@/components/SavingGoalForm';
 import Modal from '@/components/Modal';
 import { Toast } from '@/lib/alerts/alerts';
+import '@/styles/budgets.css';
 
 const MONTH_NAMES = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDashboard } from '@/hooks/useDashboard';
+import '@/styles/dashboard.css';
 
 /**
  * DashboardPage — Vista Principal Consolidada (Fase 6).

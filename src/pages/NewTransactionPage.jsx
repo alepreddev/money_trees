@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTransactions } from '@/hooks/useTransactions';
 import TransactionForm from '@/components/TransactionForm';
 import { Toast } from '@/lib/alerts/alerts';
+import '@/styles/transactions.css';
 
 /**
  * NewTransactionPage — Página dedicada para registro rápido de transacciones.

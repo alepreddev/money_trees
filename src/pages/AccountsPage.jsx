@@ -4,6 +4,7 @@ import AccountCard from '@/components/AccountCard';
 import AccountForm from '@/components/AccountForm';
 import Modal from '@/components/Modal';
 import { Toast } from '@/lib/alerts/alerts';
+import '@/styles/accounts.css';
 
 /**
  * Formatea un número como moneda.

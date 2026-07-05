@@ -6,6 +6,7 @@ import TransactionCard from '@/components/TransactionCard';
 import TransactionForm from '@/components/TransactionForm';
 import Modal from '@/components/Modal';
 import { Toast } from '@/lib/alerts/alerts';
+import '@/styles/transactions.css';
 
 /**
  * Formatea moneda para el resumen

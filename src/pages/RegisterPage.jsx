@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Toast } from '@/lib/alerts/alerts';
+import '@/styles/auth.css';
 
 /**
  * RegisterPage — Página de registro de nuevo usuario.

@@ -4,6 +4,7 @@ import CategoryCard from '@/components/CategoryCard';
 import CategoryForm from '@/components/CategoryForm';
 import Modal from '@/components/Modal';
 import { Toast } from '@/lib/alerts/alerts';
+import '@/styles/categories.css';
 
 /**
  * CategoriesPage — Página de gestión de categorías.
