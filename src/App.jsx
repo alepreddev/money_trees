@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PublicRoute from '@/components/PublicRoute';
 import AppLayout from '@/layouts/AppLayout';
@@ -29,32 +30,34 @@ function PageLoader() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* --- Rutas públicas (solo sin sesión) --- */}
-            <Route element={<PublicRoute />}>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-            </Route>
-
-            {/* --- Rutas protegidas (requieren sesión) --- */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<AppLayout />}>
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/accounts" element={<AccountsPage />} />
-                <Route path="/categories" element={<CategoriesPage />} />
-                <Route path="/transactions" element={<TransactionsPage />} />
-                <Route path="/transactions/new" element={<NewTransactionPage />} />
-                <Route path="/budgets" element={<BudgetsPage />} />
+      <ThemeProvider>
+        <AuthProvider>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* --- Rutas públicas (solo sin sesión) --- */}
+              <Route element={<PublicRoute />}>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
               </Route>
-            </Route>
 
-            {/* --- Fallback: redirigir al dashboard --- */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </Suspense>
-      </AuthProvider>
+              {/* --- Rutas protegidas (requieren sesión) --- */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<AppLayout />}>
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/accounts" element={<AccountsPage />} />
+                  <Route path="/categories" element={<CategoriesPage />} />
+                  <Route path="/transactions" element={<TransactionsPage />} />
+                  <Route path="/transactions/new" element={<NewTransactionPage />} />
+                  <Route path="/budgets" element={<BudgetsPage />} />
+                </Route>
+              </Route>
+
+              {/* --- Fallback: redirigir al dashboard --- */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Suspense>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

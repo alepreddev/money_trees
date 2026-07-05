@@ -6,35 +6,38 @@
    Tipografía: Inter (Google Fonts cargada en index.html)
    ============================================ */
 
-/* --- Google Font --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* --- Design Tokens --- */
-:root {
-  /* Colores primarios (Minimalist Jet Black / Charcoal) */
-  --color-primary: #111827;
-  --color-primary-light: #374151;
-  --color-primary-dark: #030712;
-  --color-primary-bg: #F3F4F6;
-  --color-primary-ghost: rgba(17, 24, 39, 0.05);
+/* --- Design Tokens (Default: Fintech Corporate Navy & Lavender from DESIGN.md) --- */
+:root,
+[data-theme="light"],
+[data-accent="default"] {
+  /* Colores primarios (Midnight Navy & Lavender DESIGN.md) */
+  --color-primary: #080B11;
+  --color-primary-light: #213145;
+  --color-primary-dark: #000000;
+  --color-primary-bg: #EFF4FF;
+  --color-primary-ghost: rgba(8, 11, 17, 0.05);
+  --color-accent: #7C7CF2;
 
-  /* Superficies (Minimalist Clean White) */
+  /* Superficies (Clean White & Soft Lavender) */
   --color-surface: #FFFFFF;
-  --color-surface-raised: #F8F9FA;
-  --color-surface-sunken: #F1F3F5;
-  --color-surface-hover: #EEF0F2;
+  --color-surface-raised: #F8F9FF;
+  --color-surface-sunken: #EFF4FF;
+  --color-surface-hover: #E5EEFF;
 
   /* Fondo general */
-  --color-bg: #FAFBFD;
+  --color-bg: #F8F9FF;
 
   /* Texto */
-  --color-text: #111827;
-  --color-text-secondary: #4B5563;
-  --color-text-muted: #9CA3AF;
+  --color-text: #0B1C30;
+  --color-text-secondary: #45474B;
+  --color-text-muted: #76777C;
 
   /* Bordes */
-  --color-border: #E5E7EB;
-  --color-border-light: #F2F4F7;
+  --color-border: #C6C6CB;
+  --color-border-light: #E5EEFF;
 
   /* Semánticos */
   --color-income: #00B894;
@@ -58,13 +61,125 @@
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
+  --radius-xl: 1.5rem;
   --radius-full: 999px;
 
   /* Transiciones */
   --transition-fast: 150ms ease;
   --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- Temas de Acento (Light Mode) --- */
+[data-accent="emerald"] {
+  --color-primary: #047857;
+  --color-primary-light: #10B981;
+  --color-primary-dark: #064E3B;
+  --color-primary-bg: #ECFDF5;
+  --color-primary-ghost: rgba(16, 185, 129, 0.08);
+  --color-accent: #10B981;
+}
+
+[data-accent="sapphire"] {
+  --color-primary: #1D4ED8;
+  --color-primary-light: #3B82F6;
+  --color-primary-dark: #1E3A8A;
+  --color-primary-bg: #EFF6FF;
+  --color-primary-ghost: rgba(59, 130, 246, 0.08);
+  --color-accent: #3B82F6;
+}
+
+[data-accent="amber"] {
+  --color-primary: #B45309;
+  --color-primary-light: #F59E0B;
+  --color-primary-dark: #78350F;
+  --color-primary-bg: #FFFBEB;
+  --color-primary-ghost: rgba(245, 158, 11, 0.08);
+  --color-accent: #F59E0B;
+}
+
+/* --- MODO OSCURO (DESIGN.md Deep Midnight Navy #080B11 Background) --- */
+[data-theme="dark"] {
+  /* Superficies oscuras elegantes */
+  --color-surface: #131824;
+  --color-surface-raised: #1E2536;
+  --color-surface-sunken: #0B0F19;
+  --color-surface-hover: #232C3F;
+
+  /* Fondo general Midnight Navy */
+  --color-bg: #080B11;
+
+  /* Texto alto contraste */
+  --color-text: #F8F9FF;
+  --color-text-secondary: #C4C6CF;
+  --color-text-muted: #81848C;
+
+  /* Bordes sutiles */
+  --color-border: #2D3748;
+  --color-border-light: rgba(255, 255, 255, 0.08);
+
+  /* Sombras oscuras profundas */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.7);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Acentos específicos en Modo Oscuro */
+[data-theme="dark"][data-accent="default"],
+[data-theme="dark"]:not([data-accent]) {
+  --color-primary: #7C7CF2;
+  --color-primary-light: #8989FF;
+  --color-primary-dark: #504FC3;
+  --color-primary-bg: rgba(124, 124, 242, 0.15);
+  --color-primary-ghost: rgba(124, 124, 242, 0.08);
+}
+
+[data-theme="dark"][data-accent="emerald"] {
+  --color-primary: #10B981;
+  --color-primary-light: #34D399;
+  --color-primary-dark: #059669;
+  --color-primary-bg: rgba(16, 185, 129, 0.15);
+  --color-primary-ghost: rgba(16, 185, 129, 0.08);
+}
+
+[data-theme="dark"][data-accent="sapphire"] {
+  --color-primary: #3B82F6;
+  --color-primary-light: #60A5FA;
+  --color-primary-dark: #2563EB;
+  --color-primary-bg: rgba(59, 130, 246, 0.15);
+  --color-primary-ghost: rgba(59, 130, 246, 0.08);
+}
+
+[data-theme="dark"][data-accent="amber"] {
+  --color-primary: #F59E0B;
+  --color-primary-light: #FBBF24;
+  --color-primary-dark: #D97706;
+  --color-primary-bg: rgba(245, 158, 11, 0.15);
+  --color-primary-ghost: rgba(245, 158, 11, 0.08);
+}
+
+/* --- Liquid Glass / Dark Mode Overrides --- */
+[data-theme="dark"] .app-header {
+  background: rgba(19, 24, 36, 0.75);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .app-nav__link.active {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .app-header__user-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .app-header__user-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--color-primary);
 }
 
 /* --- Reset --- */
@@ -85,10 +200,11 @@ html {
 
 body {
   min-height: 100vh;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   background-color: var(--color-bg);
   color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* --- Loading screen --- */

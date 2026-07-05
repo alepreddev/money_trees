@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import Modal from '@/components/Modal';
 import { Toast } from '@/lib/alerts/alerts';
+import { useTheme } from '@/contexts/ThemeContext';
 
 /**
  * SettingsModal — Modal de configuración del usuario con barra lateral (sidebar).
  * 
  * Secciones:
  * 1. Cuenta (Información de usuario logueado, avatar, correo, estado)
- * 2. Personalizar (Modo claro/oscuro y temas de color - Próximamente)
+ * 2. Personalizar (Modo claro/oscuro y temas de color - DESIGN.md)
  * 3. Información (Acerca de Money Trees y equipo de desarrollo)
  */
 export default function SettingsModal({ isOpen, onClose, user, profile, onSignOut }) {
   const [activeTab, setActiveTab] = useState('account');
+  const { mode, setMode, accent, setAccent } = useTheme();
 
   // Determinar nombre, email y avatar del usuario logueado
   const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url || null;
@@ -19,8 +21,14 @@ export default function SettingsModal({ isOpen, onClose, user, profile, onSignOu
   const email = profile?.email || user?.email || 'No disponible';
   const initial = displayName ? displayName.charAt(0).toUpperCase() : 'U';
 
-  function handleThemeClick(themeName) {
-    Toast.show(`Tema ${themeName} - Especificaciones en desarrollo`, { type: 'ios', status: 'info' });
+  function handleModeChange(newMode) {
+    setMode(newMode);
+    Toast.show(`Modo ${newMode === 'light' ? 'Claro' : 'Oscuro'} activado`, { type: 'ios', status: 'success' });
+  }
+
+  function handleAccentChange(newAccent, name) {
+    setAccent(newAccent);
+    Toast.show(`Tema ${name} aplicado`, { type: 'ios', status: 'success' });
   }
 
   function handleSignOutClick() {
@@ -79,16 +87,16 @@ export default function SettingsModal({ isOpen, onClose, user, profile, onSignOu
           <div className="settings-theme-grid">
             <button
               type="button"
-              className="settings-theme-card settings-theme-card--active"
-              onClick={() => handleThemeClick('Claro')}
+              className={`settings-theme-card ${mode === 'light' ? 'settings-theme-card--active' : ''}`}
+              onClick={() => handleModeChange('light')}
             >
               <span style={{ fontSize: '1.25rem' }}>☀️</span>
               <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Modo Claro</span>
             </button>
             <button
               type="button"
-              className="settings-theme-card"
-              onClick={() => handleThemeClick('Oscuro')}
+              className={`settings-theme-card ${mode === 'dark' ? 'settings-theme-card--active' : ''}`}
+              onClick={() => handleModeChange('dark')}
             >
               <span style={{ fontSize: '1.25rem' }}>🌙</span>
               <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Modo Oscuro</span>
@@ -103,32 +111,32 @@ export default function SettingsModal({ isOpen, onClose, user, profile, onSignOu
           <div className="settings-theme-grid">
             <button
               type="button"
-              className="settings-theme-card settings-theme-card--active"
-              onClick={() => handleThemeClick('Esmeralda (Default)')}
+              className={`settings-theme-card ${accent === 'default' ? 'settings-theme-card--active' : ''}`}
+              onClick={() => handleAccentChange('default', 'Fintech Navy (DESIGN.md)')}
+            >
+              <span className="settings-theme-dot" style={{ background: '#7C7CF2', border: '2px solid #080B11' }}></span>
+              <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Navy & Lavender</span>
+            </button>
+            <button
+              type="button"
+              className={`settings-theme-card ${accent === 'emerald' ? 'settings-theme-card--active' : ''}`}
+              onClick={() => handleAccentChange('emerald', 'Esmeralda')}
             >
               <span className="settings-theme-dot" style={{ background: '#10b981' }}></span>
               <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Esmeralda</span>
             </button>
             <button
               type="button"
-              className="settings-theme-card"
-              onClick={() => handleThemeClick('Zafiro')}
+              className={`settings-theme-card ${accent === 'sapphire' ? 'settings-theme-card--active' : ''}`}
+              onClick={() => handleAccentChange('sapphire', 'Zafiro')}
             >
               <span className="settings-theme-dot" style={{ background: '#3b82f6' }}></span>
               <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Zafiro</span>
             </button>
             <button
               type="button"
-              className="settings-theme-card"
-              onClick={() => handleThemeClick('Amatista')}
-            >
-              <span className="settings-theme-dot" style={{ background: '#8b5cf6' }}></span>
-              <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Amatista</span>
-            </button>
-            <button
-              type="button"
-              className="settings-theme-card"
-              onClick={() => handleThemeClick('Ámbar')}
+              className={`settings-theme-card ${accent === 'amber' ? 'settings-theme-card--active' : ''}`}
+              onClick={() => handleAccentChange('amber', 'Ámbar')}
             >
               <span className="settings-theme-dot" style={{ background: '#f59e0b' }}></span>
               <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Ámbar</span>
