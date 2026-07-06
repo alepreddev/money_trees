@@ -132,6 +132,16 @@ export function AuthProvider({ children }) {
     return { data, error };
   }
 
+  async function signInWithGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    return { data, error };
+  }
+
   async function signOut() {
     clearAllCache();
     const { error } = await supabase.auth.signOut();
@@ -151,6 +161,7 @@ export function AuthProvider({ children }) {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut,
   };
 

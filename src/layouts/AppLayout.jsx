@@ -16,8 +16,8 @@ export default function AppLayout() {
   const { user, profile, signOut } = useAuth();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url || null;
-  const displayName = profile?.full_name || user?.user_metadata?.full_name || profile?.email || user?.email || 'Usuario';
+  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || null;
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || profile?.email || user?.email || 'Usuario';
   const initial = displayName ? displayName.charAt(0).toUpperCase() : 'U';
 
   async function handleSignOut() {

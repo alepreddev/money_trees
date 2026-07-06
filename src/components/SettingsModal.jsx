@@ -16,8 +16,8 @@ export default function SettingsModal({ isOpen, onClose, user, profile, onSignOu
   const { mode, setMode, accent, setAccent } = useTheme();
 
   // Determinar nombre, email y avatar del usuario logueado
-  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url || null;
-  const displayName = profile?.full_name || user?.user_metadata?.full_name || profile?.email || user?.email || 'Usuario';
+  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || null;
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || profile?.email || user?.email || 'Usuario';
   const email = profile?.email || user?.email || 'No disponible';
   const initial = displayName ? displayName.charAt(0).toUpperCase() : 'U';
 

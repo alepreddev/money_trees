@@ -12,7 +12,7 @@ import '@/styles/auth.css';
  * para poblar automáticamente public.profiles.
  */
 export default function RegisterPage() {
-  const { signUp } = useAuth();
+  const { signUp, signInWithGoogle } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -219,7 +219,12 @@ export default function RegisterPage() {
           <button
             type="button"
             className="auth-google-btn"
-            onClick={() => Toast.show('Registro con Google próximamente', { type: 'ios', status: 'info' })}
+            onClick={async () => {
+              const { error: googleError } = await signInWithGoogle();
+              if (googleError) {
+                Toast.show(googleError.message, { type: 'ios', status: 'error' });
+              }
+            }}
           >
             <svg className="auth-google-icon" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
