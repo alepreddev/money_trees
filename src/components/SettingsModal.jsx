@@ -218,7 +218,7 @@ export default function SettingsModal({ isOpen, onClose, user, profile, onSignOu
               onClick={handleSignOutClick}
               className="settings-logout-btn"
             >
-              <span style={{ fontSize: '1.125rem' }}>🚪</span>
+              {/* <span style={{ fontSize: '1.125rem' }}>🚪</span> */}
               <span>Cerrar sesión</span>
             </button>
           </div>
